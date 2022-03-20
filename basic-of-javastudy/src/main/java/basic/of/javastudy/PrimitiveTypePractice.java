@@ -1,4 +1,4 @@
-package basci.of.javastudy;
+package basic.of.javastudy;
 
 public class PrimitiveTypePractice {
     public static void main(String[] args) {

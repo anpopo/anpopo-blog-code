@@ -1,4 +1,4 @@
-package basci.of.javastudy;
+package basic.of.javastudy;
 
 import java.util.Arrays;
 
