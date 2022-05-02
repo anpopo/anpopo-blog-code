@@ -1,10 +1,9 @@
 package fastcampus.springpractice.todolist.service;
 
 
-import fastcampus.springpractice.todolist.model.TodoEntity;
+import fastcampus.springpractice.todolist.model.TodoModel;
 import fastcampus.springpractice.todolist.model.TodoRequest;
-import fastcampus.springpractice.todolist.repository.TodoRepository;
-import org.junit.jupiter.api.Assertions;
+import fastcampus.springpractice.todolist.service.repository.TodoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
@@ -32,31 +31,31 @@ class TodoServiceTest {
     @Test
     void add() {
         Mockito
-                .when(this.todoRepository.save(Mockito.any(TodoEntity.class)))
+                .when(this.todoRepository.save(Mockito.any(TodoModel.class)))
                 .then(AdditionalAnswers.returnsFirstArg());
 
         TodoRequest expected = new TodoRequest();
         expected.setTitle("Test Title");
 
-        TodoEntity actual = this.todoService.add(expected);
+        TodoModel actual = this.todoService.add(expected);
         assertEquals(expected.getTitle(), actual.getTitle());
     }
 
     @Test
     void searchById() {
-        TodoEntity todoEntity = new TodoEntity();
-        todoEntity.setId(123L);
-        todoEntity.setCompleted(false);
-        todoEntity.setOrder(0L);
-        todoEntity.setTitle("Test Title");
+        TodoModel todoModel = new TodoModel();
+        todoModel.setId(123L);
+        todoModel.setCompleted(false);
+        todoModel.setOrder(0L);
+        todoModel.setTitle("Test Title");
 
-        Optional<TodoEntity> optional = Optional.of(todoEntity);
+        Optional<TodoModel> optional = Optional.of(todoModel);
 
         given(todoRepository.findById(Mockito.anyLong()))
                 .willReturn(optional);
 
-        TodoEntity actual = this.todoService.searchById(123L);
-        TodoEntity expected = optional.get();
+        TodoModel actual = this.todoService.searchById(123L);
+        TodoModel expected = optional.get();
 
         org.assertj.core.api.Assertions.assertThat(expected.getId()).isEqualTo(actual.getId());
         org.assertj.core.api.Assertions.assertThat(expected.getTitle()).isEqualTo(actual.getTitle());

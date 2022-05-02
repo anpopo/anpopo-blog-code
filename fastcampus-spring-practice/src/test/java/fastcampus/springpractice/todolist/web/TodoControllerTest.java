@@ -1,7 +1,7 @@
-package fastcampus.springpractice.todolist.controller;
+package fastcampus.springpractice.todolist.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fastcampus.springpractice.todolist.model.TodoEntity;
+import fastcampus.springpractice.todolist.model.TodoModel;
 import fastcampus.springpractice.todolist.model.TodoRequest;
 import fastcampus.springpractice.todolist.service.TodoService;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,9 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,14 +24,14 @@ class TodoControllerTest {
     @Autowired
     MockMvc mvc;
 
-    private TodoEntity expected;
+    private TodoModel expected;
 
     @MockBean
     private TodoService todoService;
 
     @BeforeEach
     void setup() {
-        expected = new TodoEntity();
+        expected = new TodoModel();
         expected.setId(123L);
         expected.setTitle("Test Title");
         expected.setOrder(0L);
@@ -47,7 +45,7 @@ class TodoControllerTest {
                 .when(todoService.add(Mockito.any(TodoRequest.class)))
                 .then((i) -> {
                     TodoRequest request = i.getArgument(0, TodoRequest.class);
-                    return new TodoEntity(expected.getId(), request.getTitle(), expected.getOrder(), expected.getCompleted());
+                    return new TodoModel(expected.getId(), request.getTitle(), expected.getOrder(), expected.getCompleted());
                 });
 
         TodoRequest request = new TodoRequest();
