@@ -1,6 +1,6 @@
 package basic.of.javastudy.absinter;
 
-public class RollerCoaster implements Attraction{
+public class RollerCoaster implements Attraction, Captureable{
 
     @Override
     public void startAttraction() {
@@ -14,7 +14,9 @@ public class RollerCoaster implements Attraction{
 
         try {
             System.out.printf("롤러 코스터가 %.3f 초간 운행됩니다.\n", runningTime / 1000.0);
-            Thread.sleep(runningTime);
+            Thread.sleep(runningTime / 2);
+            this.capture();
+            Thread.sleep(runningTime / 2);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -34,5 +36,10 @@ public class RollerCoaster implements Attraction{
     @Override
     public void emergencyStop() {
         System.out.println("롤러 코스터는 비상 정지를 할 수 없습니다. 운행이 종료된 후 비상정지를 시도합니다.");
+    }
+
+    @Override
+    public void capture() {
+        System.out.println("탑승자의 사진을 찍습니다.\n찰칵!!");
     }
 }
