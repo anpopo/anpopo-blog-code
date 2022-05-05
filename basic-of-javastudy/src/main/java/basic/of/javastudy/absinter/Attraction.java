@@ -13,4 +13,12 @@ public interface Attraction {
     void endAttraction();
 
     void run();
+
+    default void emergencyStop() {
+        System.out.println("비상 정지를 합니다. 안전에 유의하세요.");
+    }
+
+    static void fix() {
+        System.out.println("놀이기구를 수리합니다.");
+    }
 }

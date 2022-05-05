@@ -1,19 +1,28 @@
 package basic.of.javastudy.absinter;
 
+import java.util.List;
+
 public class InterMain {
     public static void main(String[] args) {
-        Attraction attraction = AttractionFactory.of("RollerCoaster");
+        String rollerCoaster = "RollerCoaster";
+        String viking = "Viking";
+        List<String> attractionName = List.of(rollerCoaster, viking);
 
-        if (attraction != null) {
-            attraction.startAttraction();
+        for (int i = 0; i < attractionName.size(); i++) {
+            Attraction attraction = AttractionFactory.of(attractionName.get(i));
+            if (attraction != null ) {
+                attraction.startAttraction();
+            }
+            System.out.println("=============================================");
         }
 
-        System.out.println("=============================================");
-
-        attraction = AttractionFactory.of("Viking");
-
-        if (attraction != null) {
-            attraction.startAttraction();
+        for (int i = 0; i < attractionName.size(); i++) {
+            Attraction attraction = AttractionFactory.of(attractionName.get(i));
+            if (attraction != null ) {
+                attraction.emergencyStop();
+                Attraction.fix();
+            }
+            System.out.println("=============================================");
         }
     }
 }

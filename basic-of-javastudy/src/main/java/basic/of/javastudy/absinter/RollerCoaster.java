@@ -1,7 +1,5 @@
 package basic.of.javastudy.absinter;
 
-import java.util.Random;
-
 public class RollerCoaster implements Attraction{
 
     @Override
@@ -31,5 +29,10 @@ public class RollerCoaster implements Attraction{
     @Override
     public void run() {
         System.out.println("롤러 코스터 신나게 달리는 중!!!!");
+    }
+
+    @Override
+    public void emergencyStop() {
+        System.out.println("롤러 코스터는 비상 정지를 할 수 없습니다. 운행이 종료된 후 비상정지를 시도합니다.");
     }
 }
