@@ -1,11 +1,10 @@
 package basic.of.javastudy.absinter;
 
-public class RollerCoaster implements Attraction, Captureable{
+public class RollerCoaster implements Attraction, Captureable {
 
     @Override
     public void startAttraction() {
         System.out.println("롤러 코스터를 시작합니다.");
-        this.run();
 
         long runningTime = ((long) (Math.random() * 7) * 1000) + Attraction.MIN_RUNNING_TIME_SEC;
         if (runningTime > Attraction.MAX_RUNNING_TIME_SEC) {
@@ -14,12 +13,14 @@ public class RollerCoaster implements Attraction, Captureable{
 
         try {
             System.out.printf("롤러 코스터가 %.3f 초간 운행됩니다.\n", runningTime / 1000.0);
+            this.run();
             Thread.sleep(runningTime / 2);
             this.capture();
             Thread.sleep(runningTime / 2);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         this.endAttraction();
     }
 
