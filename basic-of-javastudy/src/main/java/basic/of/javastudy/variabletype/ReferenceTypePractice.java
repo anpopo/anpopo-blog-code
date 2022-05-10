@@ -1,4 +1,4 @@
-package basic.of.javastudy;
+package basic.of.javastudy.variabletype;
 
 import java.util.Arrays;
 
