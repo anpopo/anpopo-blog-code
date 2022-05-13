@@ -1,4 +1,4 @@
-package udemy.multi.thread;
+package udemy.multi.thread.example1;
 
 public class MultiThreadMain {
     public static void main(String[] args) throws InterruptedException {
@@ -31,6 +31,17 @@ public class MultiThreadMain {
 
         Thread.sleep(10000);
 
+        Thread newThread = new NewThread();
 
+        newThread.start();
+
+
+    }
+
+    private static class NewThread extends Thread {
+        @Override
+        public void run() {
+            System.out.println("New Thread name: " + this.getName());
+        }
     }
 }
