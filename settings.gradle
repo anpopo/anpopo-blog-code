@@ -2,7 +2,6 @@ rootProject.name = 'anpopo-blog-code'
 include 'basic-of-javastudy'
 include 'libraries-check'
 include 'inflearn-spring-basic'
-include 'oauth-login'
 include 'fastcampus-spring-practice'
 include 'multi-thread-programming'
 
