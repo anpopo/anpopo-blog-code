@@ -50,17 +50,24 @@ public class CriticalSectionMain {
 
     private static class InventoryCounter {
         private int items = 0;
+        Object lock = new Object();
 
         public synchronized void increment() {
-            items++;
+            synchronized (this.lock) {
+                items++;
+            }
         }
 
         public synchronized void decrement() {
-            items--;
+            synchronized (this.lock) {
+                items--;
+            }
         }
 
         public synchronized int getItems() {
-            return items;
+            synchronized (this.lock) {
+                return items;
+            }
         }
     }
 }
