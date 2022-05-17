@@ -51,15 +51,15 @@ public class CriticalSectionMain {
     private static class InventoryCounter {
         private int items = 0;
 
-        public void increment() {
+        public synchronized void increment() {
             items++;
         }
 
-        public void decrement() {
+        public synchronized void decrement() {
             items--;
         }
 
-        public int getItems() {
+        public synchronized int getItems() {
             return items;
         }
     }
