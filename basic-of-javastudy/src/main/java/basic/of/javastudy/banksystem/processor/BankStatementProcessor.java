@@ -1,4 +1,6 @@
-package basic.of.javastudy.banksystem;
+package basic.of.javastudy.banksystem.processor;
+
+import basic.of.javastudy.banksystem.BankTransaction;
 
 import java.time.Month;
 import java.util.ArrayList;
