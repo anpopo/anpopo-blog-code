@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
 }
 
 group 'anpopo.blog'
@@ -22,6 +23,12 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.24'
     testCompileOnly 'org.projectlombok:lombok:1.18.24'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+}
+
+
+javafx {
+    version = "18.0.1"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
 test {
