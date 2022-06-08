@@ -1,4 +1,4 @@
-package step2.web;
+package constructor.web;
 
 import com.sun.net.httpserver.HttpServer;
 
