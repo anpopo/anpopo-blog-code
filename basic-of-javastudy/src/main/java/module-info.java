@@ -4,6 +4,7 @@ module anpopo.blog.code.basic.of.javastudy.main {
     requires lombok;
     requires java.xml.crypto;
     requires java.desktop;
+    requires org.bouncycastle.provider;
 
     opens basic.of.javastudy.networkpractice;
 }
