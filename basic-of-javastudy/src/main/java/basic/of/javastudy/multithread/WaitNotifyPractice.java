@@ -1,6 +1,5 @@
 package basic.of.javastudy.multithread;
 
-import javax.xml.crypto.Data;
 
 public class WaitNotifyPractice {
     public static void main(String[] args) {
