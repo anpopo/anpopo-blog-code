@@ -1,10 +1,14 @@
 package field;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.List;
 
 public class CustomSerializer {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IllegalAccessException {
+        List<Integer> integers = List.of(1, 2, 3);
 
+        System.out.println(objectToJson(integers, 0));
     }
 
     public static String objectToJson(Object instance, int indentSize) throws IllegalAccessException {
@@ -26,9 +30,11 @@ public class CustomSerializer {
             sb.append(formatStringValue(field.getName()));
             sb.append(" : ");
             if (field.getType().isPrimitive()) {
-                sb.append(formatPrimitiveValue(field, instance));
+                sb.append(formatPrimitiveValue(field.get(instance), field.getType()));
             } else if (field.getType().equals(String.class)) {
                 sb.append(formatStringValue(field.get(instance).toString()));
+            } else if (field.getType().isArray()) {
+                sb.append(arrayToJson(field.get(instance), indentSize + 1));
             } else {
                 sb.append(objectToJson(field.get(instance), indentSize + 1));
             }
@@ -46,6 +52,36 @@ public class CustomSerializer {
         return sb.toString();
     }
 
+    private static String arrayToJson(Object arrayInstance, int indentSize) throws IllegalAccessException {
+
+        StringBuilder sb = new StringBuilder();
+
+        int arrayLength = Array.getLength(arrayInstance);
+
+        Class<?> componentType = arrayInstance.getClass().getComponentType();
+
+        sb.append("[\n");
+        for (int i = 0; i < arrayLength; i++) {
+            Object element = Array.get(arrayInstance, i);
+
+            sb.append(indent(indentSize + 1));
+            if (componentType.isPrimitive()) {
+                sb.append(formatPrimitiveValue(element, componentType));
+            } else if (componentType.equals(String.class)) {
+                sb.append(formatStringValue(element.toString()));
+            } else {
+                sb.append(objectToJson(element, indentSize + 1));
+            }
+
+            if (i != arrayLength - 1) {
+                sb.append(", \n");
+            }
+        }
+
+        sb.append("\n]\n");
+        return sb.toString();
+    }
+
     private static String indent(int indentSize) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < indentSize; i++) {
@@ -54,16 +90,16 @@ public class CustomSerializer {
         return sb.toString();
     }
 
-    private static String formatPrimitiveValue(Field field, Object parentInstance) throws IllegalAccessException {
-        if (field.getType().equals(boolean.class)
-                || field.getType().equals(int.class)
-                || field.getType().equals(long.class)
-                || field.getType().equals(short.class)) {
-            return field.get(parentInstance).toString();
-        } else if (field.getType().equals(double.class) || field.getType().equals(float.class)) {
-            return String.format("%.2f", field.get(parentInstance));
+    private static String formatPrimitiveValue(Object instance, Class<?> type) throws IllegalAccessException {
+        if (type.equals(boolean.class)
+                || type.equals(int.class)
+                || type.equals(long.class)
+                || type.equals(short.class)) {
+            return instance.toString();
+        } else if (type.equals(double.class) || type.equals(float.class)) {
+            return String.format("%.2f", instance);
         }
-        throw new RuntimeException(String.format("Type : %s is unsupported", field.getType().getName()));
+        throw new RuntimeException(String.format("Type : %s is unsupported", type.getName()));
     }
 
     private static String formatStringValue(String value) {
