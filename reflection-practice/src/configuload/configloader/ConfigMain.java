@@ -3,6 +3,7 @@ package configuload.configloader;
 import configuload.data.GameConfig;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -31,6 +32,11 @@ public class ConfigMain {
             String configLine = sc.nextLine();
 
             String[] nameValuePair = configLine.split("=");
+
+            if (nameValuePair.length != 2) {
+                continue;
+            }
+
             String propertyName = nameValuePair[0];
             String propertyValue = nameValuePair[1];
 
@@ -44,12 +50,31 @@ public class ConfigMain {
             }
 
             field.setAccessible(true);
-            Object parsedValue = parseValue(field.getType(), propertyValue);
+            Object parsedValue;
+
+            if (field.getType().isArray()) {
+                parsedValue = parseArray(field.getType().getComponentType(), propertyValue);
+            } else {
+                parsedValue = parseValue(field.getType(), propertyValue);
+            }
+
             field.set(configInstance, parsedValue);
         }
 
         return configInstance;
     }
+
+    private static Object parseArray(Class<?> arrayElementType, String value) {
+        String[] elementValues = value.split(",");
+        Object arrayObject = Array.newInstance(arrayElementType, elementValues.length);
+
+        for (int i = 0; i < elementValues.length; i++) {
+            Array.set(arrayObject, i, parseValue(arrayElementType, elementValues[i]));
+        }
+
+        return arrayObject;
+    }
+
 
     private static Object parseValue(Class<?> type, String propertyValue) {
         if (type.equals(int.class)) {
