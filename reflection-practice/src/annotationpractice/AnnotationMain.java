@@ -1,9 +1,6 @@
 package annotationpractice;
 
-import annotationpractice.customannotation.InitializerClass;
-import annotationpractice.customannotation.InitializerMethod;
-import annotationpractice.customannotation.OpenResources;
-import com.sun.tools.javac.Main;
+import annotationpractice.customannotation.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -14,14 +11,23 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@ScanPackage({"app", "app.configs", "app.databases", "app.http"})
 public class AnnotationMain {
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws Throwable {
+//        initialize("app", "app.configs", "app.databases", "app.http");
+        initialize();
     }
 
-    public static void initialize(String... packageNames) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException, URISyntaxException, IOException, ClassNotFoundException {
-        List<Class<?>> classes = getAllClasses(packageNames);
+    public static void initialize() throws Throwable {
+
+        ScanPackage scanPackage = AnnotationMain.class.getAnnotation(ScanPackage.class);
+
+        if (scanPackage == null || scanPackage.value().length == 0) {
+            return;
+        }
+
+        List<Class<?>> classes = getAllClasses(scanPackage.value());
 
         for (Class<?> clazz : classes) {
             if (!clazz.isAnnotationPresent(InitializerClass.class)) {
@@ -33,7 +39,34 @@ public class AnnotationMain {
             Object instance = clazz.getConstructor().newInstance();
 
             for (Method method : methods) {
+//                method.invoke(instance);
+                callInitializingMethod(instance, method);
+            }
+        }
+    }
+
+    private static void callInitializingMethod(Object instance, Method method) throws Throwable {
+        RetryOperation retryOperation = method.getAnnotation(RetryOperation.class);
+
+        int numberOfRetries = retryOperation == null ? 0 : retryOperation.numberOfRetries();
+
+        while (true) {
+            try {
                 method.invoke(instance);
+                break;
+            } catch (InvocationTargetException e) {
+                Throwable targetException = e.getTargetException();
+
+                if (numberOfRetries > 0 && Set.of(retryOperation.retryExceptions()).contains(targetException.getClass())) {
+                    numberOfRetries--;
+                    System.out.println("Retrying.....");
+                    Thread.sleep(retryOperation.durationBetweenRetriesMs());
+                } else if (retryOperation != null) {
+                    throw new Exception(retryOperation.failureMessage(), targetException);
+                } else {
+                    throw targetException;
+                }
+
             }
         }
     }
@@ -45,7 +78,7 @@ public class AnnotationMain {
 
             String packageRelativePath = packageName.replace('.', '/');
 
-            URI packageUri = Main.class.getResource(packageRelativePath).toURI();
+            URI packageUri = AnnotationMain.class.getResource(packageRelativePath).toURI();
 
             if (packageUri.getScheme().equals("file")) {
                 Path packageFullPath = Paths.get(packageUri);
@@ -75,7 +108,7 @@ public class AnnotationMain {
             String fileName = file.getFileName().toString();
 
             if (fileName.endsWith(".class")) {
-                String classFullName = String.format("%s.%s", packageName, fileName.replaceFirst("\\.class$", ""));
+                String classFullName = String.format("%s.%s.%s", "annotationpractice", packageName, fileName.replaceFirst("\\.class$", ""));
                 Class<?> clazz = Class.forName(classFullName);
                 classes.add(clazz);
             }
