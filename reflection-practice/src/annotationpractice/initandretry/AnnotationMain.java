@@ -1,6 +1,6 @@
-package annotationpractice;
+package annotationpractice.initandretry;
 
-import annotationpractice.customannotation.*;
+import annotationpractice.initandretry.customannotation.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

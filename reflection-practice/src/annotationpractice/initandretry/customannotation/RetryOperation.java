@@ -1,4 +1,4 @@
-package annotationpractice.customannotation;
+package annotationpractice.initandretry.customannotation;
 
 
 import java.lang.annotation.ElementType;

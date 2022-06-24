@@ -1,8 +1,8 @@
-package annotationpractice.app.databases;
+package annotationpractice.initandretry.app.databases;
 
-import annotationpractice.customannotation.InitializerClass;
-import annotationpractice.customannotation.InitializerMethod;
-import annotationpractice.customannotation.RetryOperation;
+import annotationpractice.initandretry.customannotation.InitializerClass;
+import annotationpractice.initandretry.customannotation.InitializerMethod;
+import annotationpractice.initandretry.customannotation.RetryOperation;
 
 import java.io.IOException;
 
