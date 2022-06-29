@@ -108,7 +108,7 @@ public class AnnotationMain {
             String fileName = file.getFileName().toString();
 
             if (fileName.endsWith(".class")) {
-                String classFullName = String.format("%s.%s.%s", "annotationpractice", packageName, fileName.replaceFirst("\\.class$", ""));
+                String classFullName = String.format("%s.%s.%s", "annotationpractice.initandretry", packageName, fileName.replaceFirst("\\.class$", ""));
                 Class<?> clazz = Class.forName(classFullName);
                 classes.add(clazz);
             }

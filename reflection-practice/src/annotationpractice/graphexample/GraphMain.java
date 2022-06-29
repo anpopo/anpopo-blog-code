@@ -1,7 +1,6 @@
 package annotationpractice.graphexample;
 
-import annotationpractice.graphexample.annotations.Annotations;
-
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -22,20 +21,43 @@ public class GraphMain {
 //
 //        List<String> bestGamesInDescendingOrder = bestGamesFinder.getTopGames(scoreToGame);
 
-        List<String> bestGamesInDescendingOrder = execute(bestGamesFinder);
-        System.out.println(bestGamesInDescendingOrder);
+//        List<String> bestGamesInDescendingOrder = execute(bestGamesFinder);
+//        System.out.println(bestGamesInDescendingOrder);
+//        System.out.println("===============================================");
+//
+
+        SqlQueryBuilder queryBuilder = new SqlQueryBuilder(Arrays.asList("1", "2", "3"), 10, "Movies", Arrays.asList("Id", "Name"));
+
+        String sqlQuery = execute(queryBuilder);
+        System.out.println(sqlQuery);
+    }
+
+    private static Map<String, Field> getInputToField(Class<?> clazz) {
+        Map<String, Field> inputToField = new HashMap<>();
+
+        for (Field field : clazz.getDeclaredFields()) {
+            if (!field.isAnnotationPresent(Input.class)) {
+                continue;
+            }
+
+            Input input = clazz.getAnnotation(Input.class);
+            inputToField.put(input.value(), field);
+        }
+
+        return inputToField;
     }
 
     private static <T> T execute(Object instance) throws InvocationTargetException, IllegalAccessException {
         Class<?> clazz = instance.getClass();
         Map<String, Method> operationToMethod = getOperationToMethod(clazz);
+        Map<String, Field> inputToField = getInputToField(clazz);
 
         Method finalResultMethod = findFinalResultMethod(clazz);
 
-        return (T) executeWithDependencies(instance, finalResultMethod, operationToMethod);
+        return (T) executeWithDependencies(instance, finalResultMethod, operationToMethod, inputToField);
     }
 
-    private static Object executeWithDependencies(Object instance, Method currentMethod, Map<String, Method> operationToMethod) throws InvocationTargetException, IllegalAccessException {
+    private static Object executeWithDependencies(Object instance, Method currentMethod, Map<String, Method> operationToMethod, Map<String, Field> inputToField) throws InvocationTargetException, IllegalAccessException {
 
         List<Object> parameterValues = new ArrayList<>(currentMethod.getParameterCount());
 
@@ -46,7 +68,14 @@ public class GraphMain {
                 String dependencyOperationName = parameter.getAnnotation(DependsOn.class).value();
                 Method dependencyMethod = operationToMethod.get(dependencyOperationName);
 
-                value = executeWithDependencies(instance, dependencyMethod, operationToMethod);
+                value = executeWithDependencies(instance, dependencyMethod, operationToMethod, inputToField);
+            } else if (parameter.isAnnotationPresent(Input.class)) {
+                String inputName = parameter.getAnnotation(Input.class).value();
+
+                Field field = inputToField.get(inputName);
+                field.setAccessible(true);
+
+                value = field.get(instance);
             }
             parameterValues.add(value);
         }
