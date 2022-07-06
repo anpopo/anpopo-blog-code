@@ -1,24 +1,12 @@
 plugins {
-    id 'java'
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.10'
-}
-
-group 'anpopo.blog'
-version '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
 }
 
 javafx {
-    version = "17.0.1"
+    version = "18.0.1"
     modules = [ 'javafx.controls', 'javafx.fxml' ]
-}
-
-test {
-    useJUnitPlatform()
 }

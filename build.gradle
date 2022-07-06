@@ -2,18 +2,26 @@ plugins {
     id 'java'
 }
 
-group 'anpopo.blog'
-version '1.0-SNAPSHOT'
+subprojects {
+    group 'anpopo.blog'
+    version '1.0-SNAPSHOT'
 
-repositories {
-    mavenCentral()
-}
+    apply plugin: 'java'
 
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-}
+    sourceCompatibility = 11
+    targetCompatibility = 11
 
-test {
-    useJUnitPlatform()
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
 }
